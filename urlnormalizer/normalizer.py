@@ -5,9 +5,9 @@ from os.path import normpath
 from six.moves.urllib.parse import urlunsplit
 from six.moves.urllib.parse import urlsplit
 
-from urlcanon.utils import _parse_qsl, _urlencode, _quote, _unquote
-from urlcanon.validator import is_valid_url
-from urlcanon.constants import SCHEMES, DEFAULT_PORTS
+from urlnormalizer.utils import _parse_qsl, _urlencode, _quote, _unquote
+from urlnormalizer.validator import is_valid_url
+from urlnormalizer.constants import SCHEMES, DEFAULT_PORTS
 
 
 def normalize_url(url, extra_query_args=None, drop_fragments=True):

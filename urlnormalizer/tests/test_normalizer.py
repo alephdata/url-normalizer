@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from six import text_type
 from unittest import TestCase
 
-from ..normalizer import normalize_url
+from urlnormalizer import normalize_url
 
 
 class UrlTestCase(TestCase):

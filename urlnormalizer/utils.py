@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from six import text_type, PY3
 from six.moves.urllib.parse import quote, quote_plus
-from urlcanon.constants import SAFE_CHARS
+from urlnormalizer.constants import SAFE_CHARS
 
 if PY3:
     from urllib.parse import unquote_to_bytes
