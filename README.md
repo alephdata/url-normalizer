@@ -1,5 +1,4 @@
-URL-NORMALIZER
-==============
+# urlcanon
 
 [![Build Status](https://travis-ci.org/sunu/url-normalizer.svg?branch=master)](https://travis-ci.org/sunu/url-normalizer)
 
@@ -21,11 +20,7 @@ Normalizes URL by doing the following:
 
 Works with `http` and `https` urls only for now.
 
-# Python version
-
-For now, Python 3 only.
-
-# Installation
+## Installation
 
 Install using `pip`
 
@@ -34,7 +29,7 @@ $ pip install git+https://github.com/sunu/url-normalizer
 ```
 or clone and install using `python setup.py install`
 
-# Usage
+## Usage
 
 Pass a url to the `normalize_url` function as a `str` type to normalize it. 
 
@@ -109,10 +104,10 @@ In [18]: repr(normalize_url(1234))
 Out[18]: 'None'
 ```
 
-# Tests
+## Tests
 
 Run tests by using `python setup.py test`
 
-# License
+## License
 
 MIT

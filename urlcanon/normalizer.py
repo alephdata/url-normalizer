@@ -1,6 +1,6 @@
 """This module contains functions to help normalize URLs"""
-from os.path import normpath
 import string
+from os.path import normpath
 from urllib.parse import urlunsplit, unquote, quote, urlencode, urlsplit
 
 from .utils import _parse_qsl, _is_valid_url
@@ -22,6 +22,7 @@ DEFAULT_PORTS = {
 }
 
 SCHEMES = ("http", "https")
+
 
 def normalize_url(url, extra_query_args=None, drop_fragments=True):
     """Normalize a url to its canonical form.
@@ -73,7 +74,9 @@ def normalize_url(url, extra_query_args=None, drop_fragments=True):
     url = urlunsplit((scheme, netloc, path, query, fragment))
     return url
 
+
 __all__ = ["normalize_url"]
+
 
 def _normalize_path(path):
     # If there are any `/` or `?` or `#` in the path encoded as `%2f` or `%3f`
@@ -96,6 +99,7 @@ def _normalize_path(path):
         path = "/" + path.lstrip("/")
     return path
 
+
 def _normalize_netloc(scheme, netloc, username, password, port):
     # Leave auth info out before fiddling with netloc
     auth = None
@@ -115,6 +119,7 @@ def _normalize_netloc(scheme, netloc, username, password, port):
     if auth:
         netloc = auth + "@" + netloc
     return netloc
+
 
 def _normalize_query(query, extra_query_args):
     # Percent-encode and sort query arguments.
