@@ -111,6 +111,4 @@ def _normalize_query(query, extra_query_args):
     if extra_query_args:
         for (name, val) in extra_query_args:
             queries_list.append((name, val))
-    queries_list.sort()
-    query = _urlencode(queries_list)
-    return query
+    return _urlencode(queries_list)
