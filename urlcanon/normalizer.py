@@ -2,12 +2,12 @@
 from __future__ import unicode_literals
 import six
 from os.path import normpath
-from six.moves.urllib.parse import urlunsplit, unquote, quote
+from six.moves.urllib.parse import urlunsplit
 from six.moves.urllib.parse import urlsplit
 
-from urlcanon.utils import _parse_qsl, _urlencode
+from urlcanon.utils import _parse_qsl, _urlencode, _quote, _unquote
 from urlcanon.validator import is_valid_url
-from urlcanon.constants import SCHEMES, DEFAULT_PORTS, SAFE_CHARS
+from urlcanon.constants import SCHEMES, DEFAULT_PORTS
 
 
 def normalize_url(url, extra_query_args=None, drop_fragments=True):
@@ -69,8 +69,8 @@ def _normalize_path(path):
         path = path.replace('%' + reserved, '%25' + reserved.upper())
     # unquote and quote the path so that any non-safe character is
     # percent-encoded and already percent-encoded triplets are upper cased.
-    unquoted_path = unquote(path)
-    path = quote(unquoted_path, SAFE_CHARS) or "/"
+    unquoted_path = _unquote(path)
+    path = _quote(unquoted_path) or "/"
     # Use `os.path.normpath` to normalize paths i.e. remove duplicate `/` and
     # make the path absolute when `..` or `.` segments are present.
     # TODO: Should we remove duplicate slashes?
@@ -110,9 +110,7 @@ def _normalize_query(query, extra_query_args):
     # Add the additional query args if any
     if extra_query_args:
         for (name, val) in extra_query_args:
-            queries_list.append((name.encode("utf-8"),
-                                 val.encode("utf-8")))
-        queries_list.extend(extra_query_args)
+            queries_list.append((name, val))
     queries_list.sort()
     query = _urlencode(queries_list)
     return query

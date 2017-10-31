@@ -1,6 +1,11 @@
 from __future__ import unicode_literals
 from six import text_type
-from six.moves.urllib.parse import unquote_to_bytes, urlencode
+from six.moves.urllib.parse import unquote, quote, quote_plus
+from six.moves.urllib.parse import unquote_to_bytes
+
+from urlcanon.constants import SAFE_CHARS
+
+_enc = 'utf-8'
 
 
 def _noop(obj):
@@ -8,11 +13,11 @@ def _noop(obj):
 
 
 def _encode_result(obj):
-    return obj.encode('utf-8', 'strict')
+    return obj.encode(_enc)
 
 
 def _decode_args(args):
-    return tuple(x.decode('utf-8', 'strict') if x else '' for x in args)
+    return tuple(x.decode(_enc) if x else '' for x in args)
 
 
 def _coerce_args(*args):
@@ -69,5 +74,28 @@ def _parse_qsl(qs, keep_blank_values=False, strict_parsing=False):
     return r
 
 
+def _quote(text):
+    if isinstance(text, text_type):
+        text = text.encode(_enc)
+    return quote(text, safe=SAFE_CHARS)
+
+
+def _quote_plus(text):
+    if isinstance(text, text_type):
+        text = text.encode(_enc)
+    return quote_plus(text, safe=SAFE_CHARS)
+
+
+def _unquote(text):
+    text = unquote(text)
+    if not isinstance(text, text_type):
+        text = text.decode(_enc)
+    return text
+
+
 def _urlencode(queries):
-    return urlencode(queries)
+    parts = []
+    for k, v in sorted(set(queries)):
+        part = _quote_plus(k), _quote_plus(v)
+        parts.append('='.join(part))
+    return '&'.join(parts)
