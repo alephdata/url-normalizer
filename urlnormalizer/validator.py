@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import re
+import six
 
 
 def is_valid_url(value):
@@ -7,6 +8,8 @@ def is_valid_url(value):
     Does the value look like a URL?
     From https://github.com/django/django/blob/stable/2.0.x/django/core/validators.py
     """
+    if not isinstance(value, six.string_types):
+        return False
     if value.startswith("//"):
         value = value[2:]
     ul = '\u00a1-\uffff'  # unicode letters range (must not be a raw string)
