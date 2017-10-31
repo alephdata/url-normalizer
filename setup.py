@@ -2,15 +2,15 @@
 from setuptools import setup
 
 setup(
-    name="urlcanon",
+    name="urlnormalizer",
     version="1.0.0",
     author="Tarashish Mishra",
     author_email="sunu@sunu.in",
     description="Normalize URLs. Mostly useful for deduplicating HTTP URLs.",
     long_description="",
     license="MIT",
-    url="https://github.com/alephdata/urlcanon",
-    packages=['urlcanon'],
+    url="https://github.com/alephdata/urlnormalizer",
+    packages=['urlnormalizer'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
