@@ -99,7 +99,8 @@ def _unquote(text):
 
 def _urlencode(queries):
     parts = []
-    for k, v in sorted(set(queries)):
+    for k, v in queries:
         part = _quote_plus(k), _quote_plus(v)
         parts.append('='.join(part))
+    parts = sorted(set(parts))
     return '&'.join(parts)
