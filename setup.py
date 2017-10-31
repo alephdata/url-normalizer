@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="urlcanon",
-    version="0.0.1",
+    version="1.0.0",
     author="Tarashish Mishra",
     author_email="sunu@sunu.in",
     description="Normalize URLs. Mostly useful for deduplicating HTTP URLs.",
