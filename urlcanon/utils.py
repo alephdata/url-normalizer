@@ -1,9 +1,12 @@
 from __future__ import unicode_literals
-from six import text_type
-from six.moves.urllib.parse import unquote, quote, quote_plus
-from six.moves.urllib.parse import unquote_to_bytes
-
+from six import text_type, PY3
+from six.moves.urllib.parse import quote, quote_plus
 from urlcanon.constants import SAFE_CHARS
+
+if PY3:
+    from urllib.parse import unquote_to_bytes
+else:
+    from urllib import unquote as unquote_to_bytes
 
 _enc = 'utf-8'
 
@@ -87,9 +90,10 @@ def _quote_plus(text):
 
 
 def _unquote(text):
-    text = unquote(text)
-    if not isinstance(text, text_type):
-        text = text.decode(_enc)
+    if isinstance(text, text_type):
+        text = text.encode(_enc)
+    text = unquote_to_bytes(text)
+    text = text.decode(_enc)
     return text
 
 
