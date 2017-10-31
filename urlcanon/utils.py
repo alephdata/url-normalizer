@@ -1,5 +1,35 @@
-import re
-from urllib.parse import _coerce_args, unquote_to_bytes
+from __future__ import unicode_literals
+from six import text_type
+from six.moves.urllib.parse import unquote_to_bytes, urlencode
+
+
+def _noop(obj):
+    return obj
+
+
+def _encode_result(obj):
+    return obj.encode('utf-8', 'strict')
+
+
+def _decode_args(args):
+    return tuple(x.decode('utf-8', 'strict') if x else '' for x in args)
+
+
+def _coerce_args(*args):
+    # Invokes decode if necessary to create str args
+    # and returns the coerced inputs along with
+    # an appropriate result coercion function
+    #   - noop for str inputs
+    #   - encoding function otherwise
+    str_input = isinstance(args[0], text_type)
+    for arg in args[1:]:
+        # We special-case the empty string to support the
+        # "scheme=''" default argument to some functions
+        if arg and isinstance(arg, text_type) != str_input:
+            raise TypeError("Cannot mix str and non-str arguments")
+    if str_input:
+        return args + (_noop,)
+    return _decode_args(args) + (_encode_result,)
 
 
 def _parse_qsl(qs, keep_blank_values=False, strict_parsing=False):
@@ -39,39 +69,5 @@ def _parse_qsl(qs, keep_blank_values=False, strict_parsing=False):
     return r
 
 
-def _is_valid_url(value):
-    """
-    Does the value look like a URL?
-    From https://github.com/django/django/blob/stable/2.0.x/django/core/validators.py
-    """
-    if value.startswith("//"):
-        value = value[2:]
-    ul = '\u00a1-\uffff'  # unicode letters range (must not be a raw string)
-
-    # IP patterns
-    ipv4_re = r'(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}'
-    ipv6_re = r'\[[0-9a-f:\.]+\]'  # (simple regex, validated later)
-
-    # Host patterns
-    hostname_re = r'[a-z' + ul + r'0-9](?:[a-z' + ul + r'0-9-]{0,61}[a-z' + ul + r'0-9])?'
-    # Max length for domain name labels is 63 characters per RFC 1034 sec. 3.1
-    domain_re = r'(?:\.(?!-)[a-z' + ul + r'0-9-]{1,63}(?<!-))*'
-    tld_re = (
-        r'\.'                                # dot
-        r'(?!-)'                             # can't start with a dash
-        r'(?:[a-z' + ul + '-]{2,63}'         # domain label
-        r'|xn--[a-z0-9]{1,59})'              # or punycode label
-        r'(?<!-)'                            # can't end with a dash
-        r'\.?'                               # may have a trailing dot
-    )
-    host_re = '(' + hostname_re + domain_re + tld_re + '|localhost)'
-
-    pattern = re.compile(
-        r'^(?:[a-z0-9\.\-\+]*)://'  # scheme is validated separately
-        r'(?:\S+(?::\S*)?@)?'  # user:pass authentication
-        r'(?:' + ipv4_re + '|' + ipv6_re + '|' + host_re + ')'
-        r'(?::?(?:\d{2,5})?)?'  # port
-        u"(?:/.*)?" # resource path
-        u"(?:\?.*)?" # query string
-        r'\Z', re.IGNORECASE)
-    return bool(pattern.match(value))
+def _urlencode(queries):
+    return urlencode(queries)

@@ -1,27 +1,13 @@
 """This module contains functions to help normalize URLs"""
-import string
+from __future__ import unicode_literals
+import six
 from os.path import normpath
-from urllib.parse import urlunsplit, unquote, quote, urlencode, urlsplit
+from six.moves.urllib.parse import urlunsplit, unquote, quote
+from six.moves.urllib.parse import urlsplit
 
-from .utils import _parse_qsl, _is_valid_url
-
-# Reserved delimeters from https://tools.ietf.org/html/rfc3986#section-2.2
-GEN_DELIMS = ":/?#[]@"
-SUB_DELIMS = "!$&'()*+,;="
-RESERVED_CHARS = GEN_DELIMS + SUB_DELIMS
-
-# Unreserved characters from https://tools.ietf.org/html/rfc3986#section-2.3
-UNRESERVED_CHARS = string.ascii_letters + string.digits + "-._~"
-
-SAFE_CHARS = RESERVED_CHARS + UNRESERVED_CHARS + '%'
-
-# TODO: Add more schemes may be
-DEFAULT_PORTS = {
-    "http": 80,
-    "https": 443
-}
-
-SCHEMES = ("http", "https")
+from urlcanon.utils import _parse_qsl, _urlencode
+from urlcanon.validator import is_valid_url
+from urlcanon.constants import SCHEMES, DEFAULT_PORTS, SAFE_CHARS
 
 
 def normalize_url(url, extra_query_args=None, drop_fragments=True):
@@ -44,7 +30,7 @@ def normalize_url(url, extra_query_args=None, drop_fragments=True):
     None
         If the passed string doesn't look like a URL, return None
     """
-    if not isinstance(url, str):
+    if not isinstance(url, six.string_types):
         return None
     url = url.strip()
     if not url.lower().startswith(SCHEMES):
@@ -52,7 +38,7 @@ def normalize_url(url, extra_query_args=None, drop_fragments=True):
             url = "http:" + url
         else:
             url = "http://" + url
-    if not _is_valid_url(url):
+    if not is_valid_url(url):
         # Doesn't look like a valid URL
         return None
     parts = urlsplit(url)
@@ -73,9 +59,6 @@ def normalize_url(url, extra_query_args=None, drop_fragments=True):
     # Put the url back together
     url = urlunsplit((scheme, netloc, path, query, fragment))
     return url
-
-
-__all__ = ["normalize_url"]
 
 
 def _normalize_path(path):
@@ -126,11 +109,10 @@ def _normalize_query(query, extra_query_args):
     queries_list = _parse_qsl(query)
     # Add the additional query args if any
     if extra_query_args:
-        extra_query_args = [
-            (name.encode("utf-8"), val.encode("utf-8"))
-            for (name, val) in extra_query_args
-        ]
+        for (name, val) in extra_query_args:
+            queries_list.append((name.encode("utf-8"),
+                                 val.encode("utf-8")))
         queries_list.extend(extra_query_args)
     queries_list.sort()
-    query = urlencode(queries_list, safe=SAFE_CHARS)
+    query = _urlencode(queries_list)
     return query
