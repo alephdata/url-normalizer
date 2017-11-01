@@ -80,7 +80,7 @@ def _parse_qsl(qs, keep_blank_values=False, strict_parsing=False):
 def _quote(text, plus=False):
     if text is None:
         return ''
-    if not isinstance(text, six.string_types):
+    if not isinstance(text, (six.text_type, six.binary_type)):
         text = six.text_type(text)
     if isinstance(text, six.text_type):
         text = text.encode(_enc)
