@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
-from six import text_type, PY3
+import six
 from six.moves.urllib.parse import quote, quote_plus
 from urlnormalizer.constants import SAFE_CHARS
 
-if PY3:
+if six.PY3:
     from urllib.parse import unquote_to_bytes
 else:
     from urllib import unquote as unquote_to_bytes
@@ -29,11 +29,11 @@ def _coerce_args(*args):
     # an appropriate result coercion function
     #   - noop for str inputs
     #   - encoding function otherwise
-    str_input = isinstance(args[0], text_type)
+    str_input = isinstance(args[0], six.text_type)
     for arg in args[1:]:
         # We special-case the empty string to support the
         # "scheme=''" default argument to some functions
-        if arg and isinstance(arg, text_type) != str_input:
+        if arg and isinstance(arg, six.text_type) != str_input:
             raise TypeError("Cannot mix str and non-str arguments")
     if str_input:
         return args + (_noop,)
@@ -77,20 +77,20 @@ def _parse_qsl(qs, keep_blank_values=False, strict_parsing=False):
     return r
 
 
-def _quote(text):
-    if isinstance(text, text_type):
+def _quote(text, plus=False):
+    if text is None:
+        return ''
+    if not isinstance(text, six.string_types):
+        text = six.text_type(text)
+    if isinstance(text, six.text_type):
         text = text.encode(_enc)
+    if plus:
+        return quote_plus(text, safe=SAFE_CHARS)
     return quote(text, safe=SAFE_CHARS)
 
 
-def _quote_plus(text):
-    if isinstance(text, text_type):
-        text = text.encode(_enc)
-    return quote_plus(text, safe=SAFE_CHARS)
-
-
 def _unquote(text):
-    if isinstance(text, text_type):
+    if isinstance(text, six.text_type):
         text = text.encode(_enc)
     text = unquote_to_bytes(text)
     text = text.decode(_enc)
@@ -100,7 +100,7 @@ def _unquote(text):
 def _urlencode(queries):
     parts = []
     for k, v in queries:
-        part = _quote_plus(k), _quote_plus(v)
+        part = _quote(k, plus=True), _quote(v, plus=True)
         parts.append('='.join(part))
     parts = sorted(set(parts))
     return '&'.join(parts)

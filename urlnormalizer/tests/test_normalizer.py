@@ -76,6 +76,17 @@ class UrlTestCase(TestCase):
         self.assertEqual(normalize_url("http://www.example.com:/"),
                          "http://www.example.com/")
 
+    def test_extra_query_args(self):
+        """Extra query args"""
+        args = (('a', 4), )
+        self.assertEqual(normalize_url("http://www.example.com:/",
+                                       extra_query_args=args),
+                         "http://www.example.com/?a=4")
+        args = (('a', None), )
+        self.assertEqual(normalize_url("http://www.example.com:/",
+                                       extra_query_args=args),
+                         "http://www.example.com/?a=")
+
     def test_remove_extra_slash(self):
         """Remove any extra slashes if present in the URl"""
         # TODO: Should we actually do this?
