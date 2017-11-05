@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from six import text_type
 from unittest import TestCase
 
-from urlnormalizer import normalize_url
+from urlnormalizer import normalize_url, query_string
 
 
 class UrlTestCase(TestCase):
@@ -232,3 +232,10 @@ class UrlTestCase(TestCase):
         assert normalize_url(None) is None
         assert normalize_url([]) is None
         assert normalize_url(123) is None
+
+    def test_query_string_empty(self):
+        self.assertEqual(query_string((('foo', None), )), '')
+
+    def test_query_string_item(self):
+        query = (('b', 5), ('a', '1'))
+        self.assertEqual(query_string(query), '?a=1&b=5')

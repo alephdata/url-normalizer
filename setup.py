@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="urlnormalizer",
-    version="1.0.4",
+    version="1.1.0",
     author="Tarashish Mishra",
     author_email="sunu@sunu.in",
     description="Normalize URLs. Mostly useful for deduplicating HTTP URLs.",
