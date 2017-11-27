@@ -71,11 +71,16 @@ def _normalize_path(path):
     # percent-encoded and already percent-encoded triplets are upper cased.
     unquoted_path = _unquote(path)
     path = _quote(unquoted_path) or "/"
+    trailing_slash = "/" == path[-1]
     # Use `os.path.normpath` to normalize paths i.e. remove duplicate `/` and
     # make the path absolute when `..` or `.` segments are present.
     # TODO: Should we remove duplicate slashes?
     # TODO: See https://webmasters.stackexchange.com/questions/8354/what-does-the-double-slash-mean-in-urls/8381#8381
     path = normpath(path)
+    # normpath strips trailing slash. Add it back if it was there because
+    # this might make a difference for URLs.
+    if trailing_slash:
+        path = path + "/"
     # POSIX allows one or two initial slashes, but treats three or more
     # as single slash.So if there are two initial slashes, make them one.
     if path.startswith("//"):
@@ -97,7 +102,7 @@ def _normalize_netloc(scheme, netloc, username, password, port):
     netloc = netloc.lower().rstrip(":").rstrip(".")
     # strip default port
     if port and DEFAULT_PORTS.get(scheme) == port:
-        netloc = netloc.rstrip(":"+str(port))
+        netloc = netloc.rstrip(":" + str(port))
     # Put auth info back in
     if auth:
         netloc = auth + "@" + netloc
