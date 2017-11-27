@@ -50,7 +50,7 @@ class UrlTestCase(TestCase):
         """Unreserved characters should not be percent encoded. If they are, they
         should be decoded back; except in case of `/`, `?` and `#`"""
         self.assertEqual(normalize_url("http://www.example.com/%7Eusername/"),
-                         "http://www.example.com/~username")
+                         "http://www.example.com/~username/")
         self.assertEqual(normalize_url('http://example.com/foo%23bar'),
                          "http://example.com/foo%23bar")
         self.assertEqual(normalize_url('http://example.com/foo%2fbar'),
@@ -69,7 +69,7 @@ class UrlTestCase(TestCase):
         self.assertEqual(normalize_url("http://www.example.com:80/bar.html"),
                          "http://www.example.com/bar.html")
         self.assertEqual(normalize_url("HTTPS://example.com:443/abc/"),
-                         "https://example.com/abc")
+                         "https://example.com/abc/")
 
     def test_remove_empty_port(self):
         """Remove empty port from URL"""
@@ -105,12 +105,12 @@ class UrlTestCase(TestCase):
         self.assertEqual(normalize_url("http://example.com/a?b=1"),
                          "http://example.com/a?b=1")
         self.assertEqual(normalize_url("http://example.com/a/?b=1"),
-                         "http://example.com/a?b=1")
+                         "http://example.com/a/?b=1")
 
     def test_dont_percent_encode_safe_chars_query(self):
         """Don't percent-encode safe characters in querystring"""
         self.assertEqual(normalize_url("http://example.com/a/?face=(-.-)"),
-                         "http://example.com/a?face=(-.-)")
+                         "http://example.com/a/?face=(-.-)")
 
     def test_query_sorting(self):
         """Query strings should be sorted"""
@@ -137,7 +137,7 @@ class UrlTestCase(TestCase):
         self.assertEqual(normalize_url("http://example.com/a?"),
                          "http://example.com/a")
         self.assertEqual(normalize_url("http://example.com/a/?"),
-                         "http://example.com/a")
+                         "http://example.com/a/")
 
     def test_percent_encode_querystring(self):
         """Non-safe characters in query string should be percent-encoded"""
