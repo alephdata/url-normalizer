@@ -70,8 +70,8 @@ def _normalize_path(path):
     # unquote and quote the path so that any non-safe character is
     # percent-encoded and already percent-encoded triplets are upper cased.
     unquoted_path = _unquote(path)
-    path = _quote(unquoted_path) or "/"
-    trailing_slash = "/" == path[-1]
+    path = _quote(unquoted_path) or '/'
+    trailing_slash = path.endswith('/')
     # Use `os.path.normpath` to normalize paths i.e. remove duplicate `/` and
     # make the path absolute when `..` or `.` segments are present.
     # TODO: Should we remove duplicate slashes?
@@ -80,7 +80,7 @@ def _normalize_path(path):
     # normpath strips trailing slash. Add it back if it was there because
     # this might make a difference for URLs.
     if trailing_slash and not path.endswith('/'):
-        path = path + "/"
+        path = path + '/'
     # POSIX allows one or two initial slashes, but treats three or more
     # as single slash.So if there are two initial slashes, make them one.
     if path.startswith('//'):
