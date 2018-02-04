@@ -79,12 +79,12 @@ def _normalize_path(path):
     path = normpath(path)
     # normpath strips trailing slash. Add it back if it was there because
     # this might make a difference for URLs.
-    if trailing_slash:
+    if trailing_slash and not path.endswith('/'):
         path = path + "/"
     # POSIX allows one or two initial slashes, but treats three or more
     # as single slash.So if there are two initial slashes, make them one.
-    if path.startswith("//"):
-        path = "/" + path.lstrip("/")
+    if path.startswith('//'):
+        path = '/' + path.lstrip('/')
     return path
 
 
