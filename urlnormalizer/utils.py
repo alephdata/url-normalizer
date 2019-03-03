@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import six
 from six.moves.urllib.parse import quote, quote_plus
 from urlnormalizer.constants import SAFE_CHARS
+from chardet import detect
 
 if six.PY3:
     from urllib.parse import unquote_to_bytes
@@ -9,6 +10,7 @@ else:
     from urllib import unquote as unquote_to_bytes
 
 _enc = 'utf-8'
+_enc_fallback = 'raw_unicode_escape'
 
 
 def _noop(obj):
@@ -93,7 +95,11 @@ def _unquote(text):
     if isinstance(text, six.text_type):
         text = text.encode(_enc)
     text = unquote_to_bytes(text)
-    text = text.decode(_enc)
+    try:
+        text = text.decode(_enc)
+    except UnicodeDecodeError:
+        encoding = detect(text).get('encoding', _enc_fallback)
+        text = text.decode(encoding)
     return text
 
 

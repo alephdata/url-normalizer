@@ -160,6 +160,9 @@ class UrlTestCase(TestCase):
         percent-encoded"""
         self.assertEqual(normalize_url("http://example.com/résumé"),
                          "http://example.com/r%C3%A9sum%C3%A9")
+        self.assertEqual(normalize_url("https://ru.wikipedia.org/wiki/%C4%E0%F3%EA%E5%E5%E2%2c_%D1%E5%F0%E8%EA%E1%E5%EA_%C6%F3%F1%F3%EF%E1%E5%EA%EE%E2%E8%F7"),
+                                       "https://ru.wikipedia.org/wiki/%D0%94%D0%B0%D1%83%D0%BA%D0%B5%D0%B5%D0%B2,_%D0%A1%D0%B5%D1%80%D0%B8%D0%BA%D0%B1%D0%B5%D0%BA_%D0%96%D1%83%D1%81%D1%83%D0%BF%D0%B1%D0%B5%D0%BA%D0%BE%D0%B2%D0%B8%D1%87"
+                                       )
 
     def test_idna(self):
         """International Domain Names should be normalized to safe characters"""
