@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import six
 from six.moves.urllib.parse import quote, quote_plus
 from urlnormalizer.constants import SAFE_CHARS
+from chardet import detect
 
 if six.PY3:
     from urllib.parse import unquote_to_bytes
@@ -9,6 +10,7 @@ else:
     from urllib import unquote as unquote_to_bytes
 
 _enc = 'utf-8'
+_enc_fallback = 'raw_unicode_escape'
 
 
 def _noop(obj):
@@ -44,11 +46,11 @@ def _parse_qsl(qs, keep_blank_values=False, strict_parsing=False):
     """Modify `urllib.parse.parse_qsl` to handle percent-encoded characters
     properly. `parse_qsl` replaces percent-encoded characters with
     replacement character (U+FFFD) (if errors = "replace") or drops them (if 
-    errors = "ignore") (See https://docs.python.org/3/howto/unicode.html#the-string-type).
+    errors = "ignore") (See https://docs.python.org/3/howto/unicode.html#the-string-type).  # noqa
     Instead we want to keep the raw bytes. And later we can percent-encode them
     directly when we need to.
 
-    Code from https://github.com/python/cpython/blob/73c4708630f99b94c35476529748629fff1fc63e/Lib/urllib/parse.py#L658
+    Code from https://github.com/python/cpython/blob/73c4708630f99b94c35476529748629fff1fc63e/Lib/urllib/parse.py#L658  # noqa
     with `unquote` replaced with `unquote_to_bytes`
     """
     qs, _coerce_result = _coerce_args(qs)
@@ -93,7 +95,11 @@ def _unquote(text):
     if isinstance(text, six.text_type):
         text = text.encode(_enc)
     text = unquote_to_bytes(text)
-    text = text.decode(_enc)
+    try:
+        text = text.decode(_enc)
+    except UnicodeDecodeError:
+        encoding = detect(text).get('encoding', _enc_fallback)
+        text = text.decode(encoding, 'ignore')
     return text
 
 

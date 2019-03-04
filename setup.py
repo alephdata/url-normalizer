@@ -19,7 +19,10 @@ setup(
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3"
     ],
-    install_requires=['six'],
+    install_requires=[
+        'six',
+        'chardet'
+    ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
 )

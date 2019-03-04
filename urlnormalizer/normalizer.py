@@ -75,7 +75,7 @@ def _normalize_path(path):
     # Use `os.path.normpath` to normalize paths i.e. remove duplicate `/` and
     # make the path absolute when `..` or `.` segments are present.
     # TODO: Should we remove duplicate slashes?
-    # TODO: See https://webmasters.stackexchange.com/questions/8354/what-does-the-double-slash-mean-in-urls/8381#8381
+    # TODO: See https://webmasters.stackexchange.com/questions/8354/what-does-the-double-slash-mean-in-urls/8381#8381  # noqa
     path = normpath(path)
     # normpath strips trailing slash. Add it back if it was there because
     # this might make a difference for URLs.
