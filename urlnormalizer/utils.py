@@ -98,8 +98,11 @@ def _unquote(text):
     try:
         text = text.decode(_enc)
     except UnicodeDecodeError:
-        encoding = detect(text).get('encoding', _enc_fallback)
-        text = text.decode(encoding, 'ignore')
+        try:
+            encoding = detect(text).get('encoding', _enc_fallback)
+            text = text.decode(encoding, 'ignore')
+        except Exception:
+            return ''
     return text
 
 
