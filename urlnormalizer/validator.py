@@ -38,6 +38,6 @@ def is_valid_url(value):
         r'(?:' + ipv4_re + '|' + ipv6_re + '|' + host_re + ')'
         r'(?::?(?:\d{2,5})?)?'  # port
         u"(?:/.*)?"  # resource path
-        u"(?:?.*)?"  # query string
+        u"(?:\\?.*)?"  # query string
         r'\Z', re.IGNORECASE)
     return bool(pattern.match(value))
