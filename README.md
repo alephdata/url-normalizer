@@ -1,6 +1,7 @@
 # urlnormalizer
 
-[![Build Status](https://travis-ci.org/alephdata/urlnormalizer.svg?branch=master)](https://travis-ci.org/alephdata/urlnormalizer)
+[![Actions Status](https://github.com/alephdata/urlnormalizer/workflows/package/badge.svg)](https://github.com/alephdata/urlnormalizer/actions)
+
 
 Normalizes URL by doing the following:
 
