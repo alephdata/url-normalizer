@@ -6,7 +6,7 @@ import six
 def is_valid_url(value):
     """
     Does the value look like a URL?
-    From https://github.com/django/django/blob/stable/2.0.x/django/core/validators.py
+    From https://github.com/django/django/blob/stable/2.0.x/django/core/validators.py  # noqa
     """
     if not isinstance(value, six.string_types):
         return False
@@ -15,11 +15,11 @@ def is_valid_url(value):
     ul = '\u00a1-\uffff'  # unicode letters range (must not be a raw string)
 
     # IP patterns
-    ipv4_re = r'(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}'
+    ipv4_re = r'(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}'  # noqa
     ipv6_re = r'\[[0-9a-f:\.]+\]'  # (simple regex, validated later)
 
     # Host patterns
-    hostname_re = r'[a-z' + ul + r'0-9](?:[a-z' + ul + r'0-9-]{0,61}[a-z' + ul + r'0-9])?'
+    hostname_re = r'[a-z' + ul + r'0-9](?:[a-z' + ul + r'0-9-]{0,61}[a-z' + ul + r'0-9])?'  # noqa
     # Max length for domain name labels is 63 characters per RFC 1034 sec. 3.1
     domain_re = r'(?:\.(?!-)[a-z' + ul + r'0-9-]{1,63}(?<!-))*'
     tld_re = (
@@ -38,6 +38,6 @@ def is_valid_url(value):
         r'(?:' + ipv4_re + '|' + ipv6_re + '|' + host_re + ')'
         r'(?::?(?:\d{2,5})?)?'  # port
         u"(?:/.*)?"  # resource path
-        u"(?:\?.*)?"  # query string
+        u"(?:?.*)?"  # query string
         r'\Z', re.IGNORECASE)
     return bool(pattern.match(value))
